@@ -82,3 +82,17 @@ docker build -t my-python-backend .
 # Run Docker container
 docker run -p 5000:5000 my-python-backend
 ```
+#### Helpful Commands
+```bash
+# Shows all docker containers 
+docker ps
+
+# Clearing Resources (Containers/Images/Volumes)
+docker compose down 
+docker system prune -a --volumes
+docker volume ls
+
+# Build Docker image
+docker exec -it budgetbuddyserver-db-1 psql -U user budgetdb
+```
+
