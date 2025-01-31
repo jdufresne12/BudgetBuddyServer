@@ -3,10 +3,12 @@ services:
     build: .
     ports:
       - "8000:8000"
+    env_file:
+      - .env
     depends_on:
       - db
-    environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/budgetdb
+    volumes:
+      - ./:/app
 
   db:
     image: postgres:15
@@ -16,9 +18,14 @@ services:
       - POSTGRES_DB=budgetdb
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d budgetdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
-      # - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
-# volumes:
-#   postgres_data:
+volumes:
+  postgres_data:
