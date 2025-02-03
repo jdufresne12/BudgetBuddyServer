@@ -18,13 +18,12 @@ class UserService:
             hashed_password = hash_password(user_data.password)
             
             query = """
-                INSERT INTO users (username, email, first_name, last_name, password_hash)
-                VALUES (%s, %s, %s, %s, %s)
-                RETURNING user_id, username, email, first_name, last_name, password_hash, created_at, updated_at, last_login
+                INSERT INTO users (email, first_name, last_name, password_hash)
+                VALUES (%s, %s, %s, %s)
+                RETURNING user_id, email, first_name, last_name, password_hash, created_at, updated_at, last_login
             """
             
             cur.execute(query, (
-                user_data.username,
                 user_data.email,
                 user_data.first_name,
                 user_data.last_name,
@@ -53,7 +52,7 @@ class UserService:
             query = """
                 DELETE FROM users 
                 WHERE user_id = %s
-                RETURNING user_id, username, email, first_name, last_name, password_hash, created_at, updated_at, last_login
+                RETURNING user_id, email, first_name, last_name, password_hash, created_at, updated_at, last_login
             """
             
             cur.execute(query, (user_id,))

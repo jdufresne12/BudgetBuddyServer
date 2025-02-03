@@ -15,7 +15,6 @@ async def create_user(user_data: UserCreate):
         if user:
             return UserResponse(
                 user_id=user.user_id,
-                username=user.username,
                 email=user.email,
                 first_name=user.first_name,
                 last_name=user.last_name,
@@ -35,7 +34,6 @@ async def delete_user(user_id: int, current_user: dict = Depends(verify_token)):
                 user_id=user.user_id,
                 first_name=user.first_name,
                 last_name=user.last_name,
-                username=user.username,
                 email=user.email,
                 created_at=user.created_at,
                 updated_at=user.updated_at
@@ -52,7 +50,6 @@ async def get_all_users(current_user: dict = Depends(verify_token)):
             return [
                 UserResponse(
                     user_id=user.user_id,
-                    username=user.username,
                     email=user.email,
                     first_name=user.first_name,
                     last_name=user.last_name,
@@ -73,7 +70,6 @@ async def get_users(user_id: int, current_user: dict = Depends(verify_token)):
                 user_id=user.user_id,
                 first_name=user.first_name,
                 last_name=user.last_name,
-                username=user.username,
                 email=user.email,
                 created_at=user.created_at,
                 updated_at=user.updated_at

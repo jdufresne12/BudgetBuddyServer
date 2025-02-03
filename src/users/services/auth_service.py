@@ -1,6 +1,6 @@
 from typing import List, Optional
 from ..models.user import User
-from ..schemas.auth import LoginRequest, LoginResponse
+from ..schemas.auth import LoginRequest
 from ...utils.password import verify_password
 from ...utils.auth_token import create_access_token
 import psycopg2 
@@ -16,15 +16,14 @@ class AuthService:
             conn = psycopg2.connect(self.db_url)
             cur = conn.cursor(cursor_factory=RealDictCursor)
             
-            query = """SELECT * from users WHERE username = %s"""
+            query = """SELECT * from users WHERE LOWER(email) = LOWER(%s)"""
             
-            cur.execute(query, (user_data.username,))
+            cur.execute(query, (user_data.email,))
             user_record = cur.fetchone()
             
             if user_record and verify_password(user_data.password, user_record['password_hash']):
                 user = User(**user_record)
                 token_data = {
-                    "sub": user.username,
                     "user_id": user.user_id,
                     "email": user.email
                 }
@@ -40,3 +39,8 @@ class AuthService:
         finally:
             cur.close()
             conn.close()
+
+    async def logout(self, token: str) -> bool:
+        # Currently just returns True (stateless)
+        # Could be enhanced to blacklist token in database
+        return True

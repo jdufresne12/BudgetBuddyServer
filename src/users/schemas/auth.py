@@ -1,16 +1,13 @@
 from pydantic import BaseModel, EmailStr
+from ..schemas.user import UserData
 from datetime import datetime
 from typing import Optional
 
 class LoginRequest(BaseModel):
-    username: str
+    email: str
     password: str
 
 class LoginResponse(BaseModel):
-    user_id: int
-    username: str
-    email: str
-    first_name: str
-    last_name: str
+    user_data: UserData
     access_token: str
     token_type: str = "bearer"
