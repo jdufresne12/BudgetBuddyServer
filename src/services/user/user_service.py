@@ -1,6 +1,6 @@
 from typing import List, Optional
-from ..models.user import User
-from ..schemas.user import UserCreate, UserUpdate
+from ...models.user import User
+from ...schemas.user import UserCreate, UserUpdate
 from ...utils.password import hash_password
 import psycopg2 
 from psycopg2.extras import RealDictCursor

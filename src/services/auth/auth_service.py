@@ -1,6 +1,6 @@
 from typing import List, Optional
-from ..models.user import User
-from ..schemas.auth import LoginRequest
+from ...models.user import User
+from ...schemas.auth import LoginRequest
 from ...utils.password import verify_password
 from ...utils.auth_token import create_access_token
 import psycopg2 

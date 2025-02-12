@@ -9,20 +9,54 @@ CREATE TABLE users (
    last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- CREATE TABLE transactions (
---    id SERIAL PRIMARY KEY,
---    user_id INTEGER REFERENCES users(id),
---    amount DECIMAL(10,2) NOT NULL,
---    category VARCHAR(50),
---    description TEXT,
---    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
+CREATE TABLE budget_sections (
+   section_id SERIAL PRIMARY KEY,      
+   user_id INTEGER NOT NULL,
+   name VARCHAR(100) NOT NULL,
+   start_date DATE,
+   end_date DATE,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- CREATE TABLE budgets (
---    id SERIAL PRIMARY KEY,
---    user_id INTEGER REFERENCES users(id),
---    category VARCHAR(50) NOT NULL,
---    amount DECIMAL(10,2) NOT NULL,
---    period VARCHAR(20) NOT NULL,
---    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
--- );
+CREATE TABLE budget_items (
+   item_id SERIAL PRIMARY KEY,
+   section_id INTEGER NOT NULL,
+   user_id INTEGER NOT NULL
+   name VARCHAR(100) NOT NULL,
+   amount DECIMAL(10,2) NOT NULL,
+   type VARCHAR(10) CHECK (type IN ('income', 'expense')) NOT NULL,
+   start_date DATE NOT NULL,
+   end_date DATE,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   CHECK (end_date IS NULL OR end_date >= start_date)
+);
+
+CREATE TABLE item_transactions (
+   transaction_id SERIAL PRIMARY KEY,
+   item_id INTEGER NOT NULL,
+   amount DECIMAL(10,2) NOT NULL,
+   date DATE NOT NULL,
+   notes TEXT,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE budget_sections
+ADD CONSTRAINT fk_budget_sections_user
+FOREIGN KEY (user_id) 
+REFERENCES users(user_id) 
+ON DELETE CASCADE;
+
+ALTER TABLE budget_items
+ADD CONSTRAINT fk_budget_items_section
+FOREIGN KEY (section_id) 
+REFERENCES budget_sections(section_id) 
+ON DELETE CASCADE;
+
+ALTER TABLE item_transactions
+ADD CONSTRAINT fk_item_transactions_item
+FOREIGN KEY (item_id) 
+REFERENCES budget_items(item_id) 
+ON DELETE CASCADE;

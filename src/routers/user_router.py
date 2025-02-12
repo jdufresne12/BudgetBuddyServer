@@ -2,8 +2,8 @@ from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from ..schemas.user import UserCreate
 from ..schemas.user import UserResponse
-from ..services.user_service import UserService
-from ...utils.auth_token import verify_token
+from ..services.user.user_service import UserService
+from ..utils.auth_token import verify_token
 
 router = APIRouter(prefix="/users", tags=["users"])
 user_service = UserService()
