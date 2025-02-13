@@ -25,6 +25,7 @@ async def create_section(data: CreateSectionData, token: dict = Depends(verify_t
 @router.post('/get_months_sections', response_model=List[CreateSectionResponse])
 async def get_months_sections(data: GetMonthsSectionsData, token: dict = Depends(verify_token)):
     try:
+        print(data)
         sections = await section_service.get_months_sections(data)
         if sections:
             print(sections)

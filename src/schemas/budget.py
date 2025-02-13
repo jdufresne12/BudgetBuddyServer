@@ -32,6 +32,11 @@ class CreateBudgetItemResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+class DeleteItemData(BaseModel):
+    section_id: int
+    user_id: int
+    item_id: int
+
 class GetSectionsItemsData(BaseModel):
     section_id: int
     user_id: int
