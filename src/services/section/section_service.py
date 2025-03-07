@@ -45,20 +45,34 @@ class SectionService:
             conn = psycopg2.connect(self.db_url)
             cur = conn.cursor(cursor_factory=RealDictCursor)
 
+            print(data)
+
             query = """
-                SELECT section_id, name, start_date, end_date
-                FROM budget_sections
-                WHERE user_id = %s
-                AND EXTRACT(MONTH FROM start_date) <= %s + 1
-                AND (end_date IS NULL) or (EXTRACT(MONTH FROM end_date) = %s + 1)
-                AND EXTRACT(YEAR FROM start_date) = %s;
+                SELECT 
+                    section_id, 
+                    name, 
+                    start_date, 
+                    end_date 
+                FROM budget_sections 
+                WHERE 
+                    user_id = %s 
+                    AND EXTRACT(YEAR FROM start_date) = %s
+                    AND EXTRACT(MONTH FROM start_date) <= %s + 1
+                    AND (
+                        end_date IS NULL 
+                        OR (
+                            EXTRACT(YEAR FROM end_date) = %s
+                            AND EXTRACT(MONTH FROM end_date) = %s + 1
+                        )
+                    );
             """ 
 
             cur.execute(query, (
                 data.user_id,
+                data.year,
                 data.month,
+                data.year,
                 data.month,
-                data.year
             ))
             response = cur.fetchall()
 

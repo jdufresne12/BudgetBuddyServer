@@ -9,7 +9,7 @@ from typing import Union, Optional
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 SECRET_KEY = os.getenv('SECRET_KEY')
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 43200  # 30 days
 
 
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
