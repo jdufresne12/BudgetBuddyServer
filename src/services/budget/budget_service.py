@@ -1,5 +1,5 @@
 from typing import List, Optional
-from ...schemas.budget import BudgetItem, CreateBudgetItem, DeleteItemData, GetSectionsItemsData
+from ...schemas.budget import BudgetItem, CreateBudgetItem, DeleteItemData, GetBudgetData
 import psycopg2 
 from psycopg2.extras import RealDictCursor
 import os
@@ -14,14 +14,14 @@ class BudgetService:
             cur = conn.cursor(cursor_factory=RealDictCursor)
 
             query = """
-                INSERT INTO budget_items (user_id, section_id, name, amount, type, start_date, end_date)
+                INSERT INTO budget_items (user_id, section_name, name, amount, type, start_date, end_date)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
-                RETURNING item_id, user_id, section_id, name, amount, type, start_date, end_date
+                RETURNING item_id, user_id, section_name, name, amount, type, start_date, end_date
             """
 
             cur.execute(query, (
                 data.user_id,
-                data.section_id,
+                data.section_name,
                 data.name, 
                 data.amount,
                 data.type,
@@ -50,13 +50,13 @@ class BudgetService:
 
             query = """
                 DELETE from budget_items
-                WHERE user_id = %s AND section_id = %s AND item_id = %s
+                WHERE user_id = %s AND section_name = %s AND item_id = %s
                 RETURNING item_id
             """
 
             cur.execute(query, (
                 data.user_id,
-                data.section_id,
+                data.section_name,
                 data.item_id
             ))
             response = cur.fetchone()
@@ -80,7 +80,7 @@ class BudgetService:
                 UPDATE budget_items
                 SET 
                     user_id = %s,
-                    section_id = %s,
+                    section_name = %s,
                     name = %s,
                     amount = %s,
                     type = %s,
@@ -88,12 +88,12 @@ class BudgetService:
                     end_date = %s,
                     updated_at = NOW()
                 WHERE item_id = %s
-                RETURNING item_id, user_id, section_id, name, amount, type, start_date, end_date
+                RETURNING item_id, user_id, section_name, name, amount, type, start_date, end_date
             """
 
             cur.execute(query, (
                 data.user_id,
-                data.section_id,
+                data.section_name,
                 data.name, 
                 data.amount,
                 data.type,
@@ -116,20 +116,31 @@ class BudgetService:
             cur.close()
             conn.close()
 
-    async def get_sections_items(self, data: GetSectionsItemsData) -> List[BudgetItem]:
+    async def get_budget(self, data: GetBudgetData) -> List[BudgetItem]:
             try:
                 conn = psycopg2.connect(self.db_url)
                 cur = conn.cursor(cursor_factory=RealDictCursor)
 
                 query = """
-                    SELECT item_id, user_id, section_id, name, amount, type, start_date, end_date
+                    SELECT item_id, user_id, section_name, name, amount, type, start_date, end_date
                     FROM budget_items 
-                    WHERE user_id = %s AND section_id = %s
+                    WHERE 
+                        user_id = %s 
+                        AND EXTRACT(YEAR FROM start_date) = %s
+                        AND EXTRACT(MONTH FROM start_date) <= %s + 1
+                        AND (
+                            end_date IS NULL 
+                            OR (
+                                EXTRACT(YEAR FROM end_date) = %s
+                                AND EXTRACT(MONTH FROM end_date) = %s + 1
+                            )
+                        );
                 """
 
                 cur.execute(query, (
                     data.user_id,
-                    data.section_id,
+                    data.month,
+                    data.year
                 ))
                 response = cur.fetchall()
 

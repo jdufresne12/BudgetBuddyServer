@@ -4,7 +4,7 @@ from typing import Optional
 
 class BudgetItem(BaseModel):
     item_id: int
-    section_id: int
+    section_name: str
     user_id: int
     name: str
     amount: int
@@ -13,7 +13,7 @@ class BudgetItem(BaseModel):
     end_date: Optional[date] = None
 
 class CreateBudgetItem(BaseModel):
-    section_id: int
+    section_name: str
     user_id: int
     name: str
     amount: int
@@ -23,7 +23,7 @@ class CreateBudgetItem(BaseModel):
 
 class CreateBudgetItemResponse(BaseModel):
     item_id: int
-    section_id: int
+    section_name: str
     name: str
     amount: int
     type: str
@@ -33,10 +33,11 @@ class CreateBudgetItemResponse(BaseModel):
     updated_at: datetime
 
 class DeleteItemData(BaseModel):
-    section_id: int
+    section_name: str
     user_id: int
     item_id: int
 
-class GetSectionsItemsData(BaseModel):
-    section_id: int
+class GetBudgetData(BaseModel):
     user_id: int
+    month: int
+    year: int

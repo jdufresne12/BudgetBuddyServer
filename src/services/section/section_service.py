@@ -7,7 +7,8 @@ import os
 class SectionService:
     def __init__(self):
         self.db_url = os.getenv("DATABASE_URL")
-
+    
+    # NOT USED ANYMORE - Now use static sections
     async def create_section( self, data: CreateSectionData ) -> Optional[CreateSectionResponse]:
         try:
             conn = psycopg2.connect(self.db_url)
@@ -40,6 +41,35 @@ class SectionService:
             cur.close()
             conn.close()
 
+    # NOT USED ANYMORE - Now use static sections
+    async def delete_section( self, data: DeleteSectionData) -> bool:
+        try:
+            conn = psycopg2.connect(self.db_url)
+            cur = conn.cursor(cursor_factory=RealDictCursor)
+
+            query = """
+                DELETE FROM budget_sections
+                WHERE user_id = %s AND section_id = %s
+                RETURNING section_id
+            """
+
+            cur.execute(query, (
+                data.user_id, 
+                data.section_id
+            ))
+            deleted = cur.fetchone()
+            conn.commit()
+
+            return bool(deleted)
+
+        except Exception as e:
+            print(f'Error deleting section: {str(e)}')
+            raise
+        finally:
+            cur.close()
+            conn.close()
+            
+    # NOT USED ANYMORE - Now use static sections
     async def get_months_sections( self, data: GetMonthsSectionsData ) -> Optional[List[CreateSectionResponse]]:
         try:
             conn = psycopg2.connect(self.db_url)
@@ -49,7 +79,7 @@ class SectionService:
 
             query = """
                 SELECT 
-                    section_id, 
+                    section_name, 
                     name, 
                     start_date, 
                     end_date 
@@ -81,33 +111,6 @@ class SectionService:
 
         except Exception as e:
             print(f'Error getting sections for this month: {str(e)}')
-            raise
-        finally:
-            cur.close()
-            conn.close()
-
-    async def delete_section( self, data: DeleteSectionData) -> bool:
-        try:
-            conn = psycopg2.connect(self.db_url)
-            cur = conn.cursor(cursor_factory=RealDictCursor)
-
-            query = """
-                DELETE FROM budget_sections
-                WHERE user_id = %s AND section_id = %s
-                RETURNING section_id
-            """
-
-            cur.execute(query, (
-                data.user_id, 
-                data.section_id
-            ))
-            deleted = cur.fetchone()
-            conn.commit()
-
-            return bool(deleted)
-
-        except Exception as e:
-            print(f'Error deleting section: {str(e)}')
             raise
         finally:
             cur.close()

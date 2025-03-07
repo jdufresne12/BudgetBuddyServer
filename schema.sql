@@ -35,9 +35,11 @@ CREATE TABLE budget_items (
 
 CREATE TABLE item_transactions (
    transaction_id SERIAL PRIMARY KEY,
+   user_id INTEGER NOT NULL,
    item_id INTEGER NOT NULL,
    description VARCHAR(100) NOT NULL,
    amount DECIMAL(10,2) NOT NULL,
+   type VARCHAR(10) CHECK (type IN ('income', 'expense')) NOT NULL,
    date DATE NOT NULL,
    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

@@ -14,11 +14,12 @@ class CreateSectionResponse(BaseModel):
     start_date: date
     end_date: Optional[date] = None
 
+class DeleteSectionData(BaseModel): 
+    user_id: int
+    section_id: int
+
 class GetMonthsSectionsData(BaseModel): 
     user_id: int
     month: int
     year: int
 
-class DeleteSectionData(BaseModel): 
-    user_id: int
-    section_id: int
