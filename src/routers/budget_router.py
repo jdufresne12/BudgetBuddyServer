@@ -14,7 +14,7 @@ async def create_budget_item(data: CreateBudgetItem, token: dict = Depends(verif
         if budget_item:
             return BudgetItem(
                 item_id = budget_item.item_id,
-                section_name = budget_item.section_name,
+                section = budget_item.section,
                 user_id = budget_item.user_id,
                 name = budget_item.name,
                 amount = budget_item.amount,
@@ -43,7 +43,7 @@ async def update_budget_item(data: BudgetItem, token: dict = Depends(verify_toke
         if budget_item:
             return BudgetItem(
                 item_id = budget_item.item_id,
-                section_name = budget_item.section_name,
+                section = budget_item.section,
                 user_id = budget_item.user_id,
                 name = budget_item.name,
                 amount = budget_item.amount,
@@ -55,7 +55,7 @@ async def update_budget_item(data: BudgetItem, token: dict = Depends(verify_toke
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
     
-@router.get('/get_budget', response_model=List[BudgetItems])
+@router.post('/get_budget', response_model=List[BudgetItems])
 async def get_budget(data: GetBudgetData, token: dict = Depends(verify_token)):
     try:
         budget = await budget_service.get_budget(data)

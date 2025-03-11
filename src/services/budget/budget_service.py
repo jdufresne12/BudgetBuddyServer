@@ -18,12 +18,12 @@ class BudgetService:
             query = """
                 INSERT INTO budget_items (user_id, section_name, name, amount, type, start_date, end_date)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
-                RETURNING item_id, user_id, section_name, name, amount, type, start_date, end_date
+                RETURNING item_id, user_id, section_name AS section, name, amount, type, start_date, end_date
             """
 
             cur.execute(query, (
                 data.user_id,
-                data.section_name,
+                data.section,
                 data.name, 
                 data.amount,
                 data.type,
@@ -58,7 +58,7 @@ class BudgetService:
 
             cur.execute(query, (
                 data.user_id,
-                data.section_name,
+                data.section,
                 data.item_id
             ))
             response = cur.fetchone()
@@ -90,12 +90,12 @@ class BudgetService:
                     end_date = %s,
                     updated_at = NOW()
                 WHERE item_id = %s
-                RETURNING item_id, user_id, section_name, name, amount, type, start_date, end_date
+                RETURNING item_id, user_id, section_name AS section, name, amount, type, start_date, end_date
             """
 
             cur.execute(query, (
                 data.user_id,
-                data.section_name,
+                data.section,
                 data.name, 
                 data.amount,
                 data.type,
@@ -125,7 +125,7 @@ class BudgetService:
 
             # Fetch budget items
             budget_query = """
-                SELECT item_id, user_id, section_name, name, amount, type, start_date, end_date
+                SELECT item_id, user_id, section_name AS section, name, amount, type, start_date, end_date
                 FROM budget_items 
                 WHERE 
                     user_id = %s 

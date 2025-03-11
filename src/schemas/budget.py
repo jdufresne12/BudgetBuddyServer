@@ -6,7 +6,7 @@ from src.schemas.transactions import Transaction
 
 class BudgetItem(BaseModel):
     item_id: int
-    section_name: str
+    section: str
     user_id: int
     name: str
     amount: int
@@ -16,7 +16,7 @@ class BudgetItem(BaseModel):
 
 class BudgetItems(BaseModel):
     item_id: int
-    section_name: str
+    section: str
     user_id: int
     name: str
     amount: int
@@ -26,7 +26,7 @@ class BudgetItems(BaseModel):
     transactions: Optional[List[Transaction]] = []
 
 class CreateBudgetItem(BaseModel):
-    section_name: str
+    section: str
     user_id: int
     name: str
     amount: int
@@ -36,7 +36,7 @@ class CreateBudgetItem(BaseModel):
 
 class CreateBudgetItemResponse(BaseModel):
     item_id: int
-    section_name: str
+    section: str
     name: str
     amount: int
     type: str
@@ -46,7 +46,7 @@ class CreateBudgetItemResponse(BaseModel):
     updated_at: datetime
 
 class DeleteItemData(BaseModel):
-    section_name: str
+    section: str
     user_id: int
     item_id: int
 
