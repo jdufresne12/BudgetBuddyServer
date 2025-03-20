@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from src.schemas.transactions import Transaction
-from ...schemas.budget import BudgetItem, BudgetItems, CreateBudgetItem, DeleteItemData, GetBudgetData
+from ...schemas.budget import BudgetCategory, BudgetItem, BudgetItems, CreateBudgetItem, DeleteItemData, GetAllCategoriesData, GetBudgetData
 import psycopg2 
 from psycopg2.extras import RealDictCursor
 import os
@@ -164,8 +164,6 @@ class BudgetService:
                     transactions_by_item[item_id] = []
                 transactions_by_item[item_id].append(Transaction(**transaction))
 
-            print(f"Transactions by item: {transactions_by_item}")
-
             # Assign transactions to budget items
             budget_items_list = []
             for item in budget_items:
@@ -177,6 +175,28 @@ class BudgetService:
         
         except Exception as e:
             print(f'Error getting sections items: {str(e)}')
+            raise
+        finally:
+            cur.close()
+            conn.close()
+
+    async def get_all_categories(self, data: GetAllCategoriesData) -> List[BudgetCategory]:
+        try:
+            conn = psycopg2.connect(self.db_url)
+            cur = conn.cursor(cursor_factory=RealDictCursor)
+
+            query = """
+                SELECT item_id, name
+                FROM budget_items 
+                WHERE user_id = %s 
+            """
+            cur.execute(query, (data.user_id,))
+            categories = cur.fetchall()
+
+            return categories
+        
+        except Exception as e:
+            print(f'Error getting budget categories: {str(e)}')
             raise
         finally:
             cur.close()

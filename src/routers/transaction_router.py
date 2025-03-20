@@ -37,7 +37,7 @@ async def delete_transaction(data: DeleteTransactionData, token: dict = Depends(
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
     
-@router.get('/get_all_transactions', response_model=List[Transaction])
+@router.post('/get_all_transactions', response_model=List[Transaction])
 async def get_all_transactions(data: GetAllTransactionsData, token: dict = Depends(verify_token)):
     try:
         transactions = await transaction_service.get_all_transactions(data)
@@ -47,7 +47,7 @@ async def get_all_transactions(data: GetAllTransactionsData, token: dict = Depen
     except Exception as e:
         raise HTTPException(status_code=500, detail={str(e)})
     
-@router.get('/get_months_transactions', response_model=List[Transaction])
+@router.post('/get_months_transactions', response_model=List[Transaction])
 async def get_months_transactions(data: GetMonthsTransactionsData, token: dict = Depends(verify_token)):
     try:
         transactions = await transaction_service.get_months_transactions(data)

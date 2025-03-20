@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from ..services.budget.budget_service import BudgetService
-from ..schemas.budget import BudgetItem, BudgetItems, CreateBudgetItem, DeleteItemData, GetBudgetData
+from ..schemas.budget import BudgetCategory, BudgetItem, BudgetItems, CreateBudgetItem, DeleteItemData, GetAllCategoriesData, GetBudgetData
 from ..utils.auth_token import verify_token
 
 router = APIRouter(prefix='/budget', tags=['budget'])
@@ -59,9 +59,14 @@ async def update_budget_item(data: BudgetItem, token: dict = Depends(verify_toke
 async def get_budget(data: GetBudgetData, token: dict = Depends(verify_token)):
     try:
         budget = await budget_service.get_budget(data)
-        if budget: 
-            return budget
-        raise HTTPException(status_code=400, detail="Failed to get budget")
+        return budget
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post('/get_all_categories', response_model=List[BudgetCategory])
+async def get_all_categories(data: GetAllCategoriesData, token: dict = Depends(verify_token)):
+    try:
+        categories = await budget_service.get_all_categories(data)
+        return categories
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

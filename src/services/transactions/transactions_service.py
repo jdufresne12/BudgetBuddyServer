@@ -50,7 +50,7 @@ class TransactionService:
             cur.close()
             conn.close()
 
-    async def update_transaction( self, data: DeleteTransactionData ) -> bool:
+    async def update_transaction( self, data: Transaction ) -> bool:
         try:
             conn = psycopg2.connect(self.db_url)
             cur = conn.cursor(cursor_factory=RealDictCursor)
@@ -92,7 +92,7 @@ class TransactionService:
             cur.close()
             conn.close()
 
-    async def delete_transaction( self, data: Transaction ) -> Optional[Transaction]:
+    async def delete_transaction( self, data: DeleteTransactionData ) -> Optional[Transaction]:
         try:
             conn = psycopg2.connect(self.db_url)
             cur = conn.cursor(cursor_factory=RealDictCursor)

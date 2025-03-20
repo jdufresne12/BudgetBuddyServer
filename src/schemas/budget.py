@@ -54,3 +54,10 @@ class GetBudgetData(BaseModel):
     user_id: int
     month: int
     year: int
+
+class GetAllCategoriesData(BaseModel):
+    user_id: int
+
+class BudgetCategory(BaseModel):
+    item_id: int
+    name: str
